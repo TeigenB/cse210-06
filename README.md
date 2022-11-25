@@ -42,6 +42,7 @@ services
 shared
     color
     point
+constants
 assets
     data
     fonts
