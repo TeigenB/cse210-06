@@ -9,7 +9,7 @@ class Point:
         _y (integer): The vertical distance from the origin.
     """
     
-    def __init__(self, x, y):
+    def __init__(self, x = 0, y = 0):
         """Constructs a new Point using the specified x and y values.
         
         Args:

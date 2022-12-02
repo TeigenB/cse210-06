@@ -6,7 +6,7 @@ from game.casting.point import Point
 class Word_Window(Actor):
     """A implement used to hit and bounce the ball in the game."""
     
-    def __init__(self, body, animation, debug = False):
+    def __init__(self, body, image, debug = False):
         """Constructs a new word_window.
         
         Args:Args:
@@ -16,9 +16,18 @@ class Word_Window(Actor):
         """
         super().__init__(debug)
         self._body = body
-        self._animation = animation
+        self._image = image
+        #self._animation = animation
 
-    def get_animation(self):
+    def get_image(self):
+        """Gets the ball's image.
+        
+        Returns:
+            An instance of Image.
+        """
+        return self._image
+
+    #def get_animation(self):
         """Gets the word_window's animation.
         
         Returns:

@@ -18,16 +18,6 @@ class VideoService:
         """
         raise NotImplementedError("not implemented in base class")
 
-    def draw_rectangle(self, size, position, color):
-        """Draws a rectangle on the buffer at the given position. The rectangle won't appear
-        on the screen until flush_buffer() is called.
-
-        Args:
-            size: An instance of keyboard_cat.casting.point.
-            position: An instance of keyboard_cat.casting.point.
-            color: An instance of keyboard_cat.casting.color.
-        """
-        raise NotImplementedError("not implemented in base class")
 
     def draw_text(self, text, position):
         """Draws the given text on the buffer at the given position. The text won't appear

@@ -10,12 +10,8 @@ class DrawCatAction(Action):
     def execute(self, cast, script, callback):
         cat = cast.get_first_actor(cat_GROUP)
         body = cat.get_body()
-
-        if cat.is_debug():
-            rectangle = body.get_rectangle()
-            self._video_service.draw_rectangle(rectangle, PURPLE)
             
-        animation = cat.get_animation()
-        image = animation.next_image()
+        #animation = cat.get_animation()
+        image = cat.get_image()
         position = body.get_position()
         self._video_service.draw_image(image, position)

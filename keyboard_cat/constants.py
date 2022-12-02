@@ -22,7 +22,7 @@ FIELD_LEFT = 0
 FIELD_RIGHT = SCREEN_WIDTH
 
 # FONT
-FONT_FILE = "cse210-06/keyboard_cat/assets/font.ttf"
+FONT_FILE = "cse210-06/keyboard_cat/assets/fonts/font.ttf"
 FONT_SMALL = 32
 FONT_LARGE = 48
 
@@ -56,9 +56,9 @@ GAME_OVER = 2
 # artifact
 artifact_GROUP = "artifacts"
 #picks a random number between 2 and 4
-number = random(2-4)
+number = random.randrange(1, 5)
 #calls that image to randomize the artifact appearance
-artifact_IMAGE = "cse210-06/keyboard_cat/assets/images/{number}.png"
+artifact_IMAGE = (f"cse210-06/keyboard_cat/assets/images/{number}.png")
 artifact_WIDTH = 28
 artifact_HEIGHT = 28
 artifact_VELOCITY = 3
@@ -96,7 +96,7 @@ SCORE_FORMAT = "SCORE: {}"
 # cat
 #this is the player picture at the bottom of the screen
 cat_GROUP = "cat"
-cat_IMAGES = ["cse210-06/keyboard_cat/assets/images/1.png"]
+cat_IMAGES = "cse210-06/keyboard_cat/assets/images/1.png"
 cat_WIDTH = 106
 cat_HEIGHT = 28
 cat_RATE = 4
@@ -104,8 +104,8 @@ cat_VELOCITY = 0
 
 # word_window
 word_window_GROUP = "word_window"
-word_window_IMAGES = ["cse210-06/keyboard_cat/assets/images/5.png"]
-word_window_WIDTH = 400
+word_window_IMAGES = "cse210-06/keyboard_cat/assets/images/5.png"
+word_window_WIDTH = 450
 word_window_HEIGHT = 150
 word_window_RATE = 4
 word_window_VELOCITY = 0
@@ -121,3 +121,5 @@ INSTRUCTIONS = "Type the words as they come across the screen.\n\
     Good luck!"
 ENTER_TO_START = "Press Enter to Start"
 WAS_GOOD_GAME = "Game Over!"
+
+print("constants")

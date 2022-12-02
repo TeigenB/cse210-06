@@ -27,6 +27,14 @@ class Artifact(Actor):
         velocity = Point(x, y)
         self._body.set_velocity(velocity)
 
+    def get_image(self):
+        """Gets the ball's image.
+        
+        Returns:
+            An instance of Image.
+        """
+        return self._image
+
     def get_body(self):
         """Gets the artifact's body.
         
