@@ -21,6 +21,11 @@ FIELD_BOTTOM = SCREEN_HEIGHT
 FIELD_LEFT = 0
 FIELD_RIGHT = SCREEN_WIDTH
 
+#ARTIFACT ENTRY POINTS
+UP = int(SCREEN_HEIGHT * 0.75)
+MIDDLE = int(SCREEN_HEIGHT/2)
+DOWN = int(SCREEN_HEIGHT * 0.25)
+
 # FONT
 FONT_FILE = "cse210-06/keyboard_cat/assets/fonts/font.ttf"
 FONT_SMALL = 28
@@ -59,8 +64,8 @@ artifact_GROUP = "artifacts"
 number = random.randrange(1, 5)
 #calls that image to randomize the artifact appearance
 artifact_IMAGE = (f"cse210-06/keyboard_cat/assets/images/{number}.png")
-artifact_WIDTH = 50
-artifact_HEIGHT = 50
+artifact_WIDTH = 15
+artifact_HEIGHT = 15
 artifact_VELOCITY = 3
 
 
