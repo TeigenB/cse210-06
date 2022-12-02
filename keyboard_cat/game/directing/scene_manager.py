@@ -71,11 +71,9 @@ class SceneManager:
         self._add_lives(cast)
         self._add_score(cast)
         self._add_artifact(cast)
-        self._add_cat(cast)
         self._add_word_window(cast)
-        self._add_dialog(cast, WELCOME)
+        self._add_cat(cast)
         self._add_dialog(cast, INSTRUCTIONS)
-        self._add_dialog(cast, ENTER_TO_START)
 
         self._add_initialize_script(script)
         self._add_load_script(script)
@@ -159,14 +157,14 @@ class SceneManager:
     def _add_dialog(self, cast, message):
         cast.clear_actors(DIALOG_GROUP)
         text = Text(message, FONT_FILE, FONT_SMALL, ALIGN_CENTER)
-        position = Point(CENTER_X, CENTER_Y)
+        position = Point(CENTER_X, CENTER_Y/3)
         label = Label(text, position)
         cast.add_actor(DIALOG_GROUP, label)
 
     def _add_score(self, cast):
         cast.clear_actors(SCORE_GROUP)
-        text = Text(SCORE_FORMAT, FONT_FILE, FONT_SMALL, ALIGN_CENTER)
-        position = Point(CENTER_X, HUD_MARGIN)
+        text = Text(SCORE_FORMAT, FONT_FILE, FONT_SMALL, ALIGN_LEFT)
+        position = Point(HUD_MARGIN, HUD_MARGIN)
         label = Label(text, position)
         cast.add_actor(SCORE_GROUP, label)
 
@@ -190,7 +188,7 @@ class SceneManager:
     def _add_word_window(self, cast):
         cast.clear_actors(word_window_GROUP)
         x = CENTER_X - word_window_WIDTH / 2
-        y = SCREEN_HEIGHT - word_window_HEIGHT - cat_HEIGHT - 10
+        y = SCREEN_HEIGHT - word_window_HEIGHT - cat_HEIGHT - 50
         position = Point(x, y)
         size = Point(word_window_WIDTH, word_window_HEIGHT)
         velocity = Point(0, 0)

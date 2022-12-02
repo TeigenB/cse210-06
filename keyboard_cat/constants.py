@@ -23,7 +23,7 @@ FIELD_RIGHT = SCREEN_WIDTH
 
 # FONT
 FONT_FILE = "cse210-06/keyboard_cat/assets/fonts/font.ttf"
-FONT_SMALL = 32
+FONT_SMALL = 28
 FONT_LARGE = 48
 
 # SOUND
@@ -39,7 +39,7 @@ ALIGN_RIGHT = 2
 # COLORS
 BLACK = Color(0, 0, 0)
 WHITE = Color(255, 255, 255)
-PURPLE = Color(255, 0, 255)
+PURPLE = Color(255, 0, 255, 200)
 
 # KEYS
 LEFT = "left"
@@ -59,8 +59,8 @@ artifact_GROUP = "artifacts"
 number = random.randrange(1, 5)
 #calls that image to randomize the artifact appearance
 artifact_IMAGE = (f"cse210-06/keyboard_cat/assets/images/{number}.png")
-artifact_WIDTH = 28
-artifact_HEIGHT = 28
+artifact_WIDTH = 50
+artifact_HEIGHT = 50
 artifact_VELOCITY = 3
 
 
@@ -97,29 +97,29 @@ SCORE_FORMAT = "SCORE: {}"
 #this is the player picture at the bottom of the screen
 cat_GROUP = "cat"
 cat_IMAGES = "cse210-06/keyboard_cat/assets/images/1.png"
-cat_WIDTH = 106
-cat_HEIGHT = 28
+cat_WIDTH = 30
+cat_HEIGHT = 30
 cat_RATE = 4
 cat_VELOCITY = 0
 
 # word_window
 word_window_GROUP = "word_window"
 word_window_IMAGES = "cse210-06/keyboard_cat/assets/images/5.png"
-word_window_WIDTH = 450
-word_window_HEIGHT = 150
+word_window_WIDTH = 150
+word_window_HEIGHT = 100
 word_window_RATE = 4
 word_window_VELOCITY = 0
 
 # DIALOG
 DIALOG_GROUP = "dialogs"
-
-WELCOME= "Welcome to Keyboard Cat!"
-INSTRUCTIONS = "Type the words as they come across the screen.\n\
+INSTRUCTIONS = "Welcome to Keyboard Cat!\n\
+    Type the words as they come across the screen.\n\
     Press Enter to submit your word. \n\
     You will gain a point if it is correct and the word will disappear.\n\
     If you fail to type the word before it reaches the edge of the screen, you lose a life.\n\
-    Good luck!"
-ENTER_TO_START = "Press Enter to Start"
+    Good luck!\n\
+        \n\nPress Enter to Start"
+
 WAS_GOOD_GAME = "Game Over!"
 
 print("constants")
