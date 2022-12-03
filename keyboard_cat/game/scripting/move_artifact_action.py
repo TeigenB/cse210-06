@@ -8,9 +8,10 @@ class MoveArtifactAction(Action):
         pass
         
     def execute(self, cast, script, callback):
-        artifact = cast.get_first_actor(artifact_GROUP)
-        body = artifact.get_body()
-        position = body.get_position()
-        velocity = body.get_velocity()
-        position = position.add(velocity)
-        body.set_position(position)
+        artifacts = cast.get_actors(artifact_GROUP)
+        for artifact in artifacts:
+            body = artifact.get_body()
+            position = body.get_position()
+            velocity = body.get_velocity()
+            position = position.add(velocity)
+            body.set_position(position)

@@ -1,4 +1,3 @@
-import random
 from constants import *
 from game.casting.actor import Actor
 from game.casting.point import Point
@@ -7,17 +6,18 @@ from game.casting.point import Point
 class Artifact(Actor):
     """A solid object that goes from the left side of the screen to the right side of the screen."""
     
-    def __init__(self, body, image, debug = False):
+    def __init__(self, body, image, text, debug = False):
         """Constructs a new Artifact.
 
         Args:
             body: A new instance of Body.
             image: A new instance of Image.
-            debug: If it is being debugged. 
+            text: the word that the user has to type 
         """
         super().__init__(debug)
         self._body = body
         self._image = image
+        self._text = text
 
     def bounce_y(self):
         """pushes the artifact in the y direction."""
@@ -50,3 +50,9 @@ class Artifact(Actor):
             An instance of Image.
         """
         return self._image
+
+    def get_text(self):
+        #gets the artifact's word
+        #returns an instance of text
+
+        return self._text

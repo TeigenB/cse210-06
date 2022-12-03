@@ -6,7 +6,7 @@ from game.casting.point import Point
 class Cat(Actor):
     """A implement used to hit and bounce the ball in the game."""
     
-    def __init__(self, body, image, debug = False):
+    def __init__(self, body, animation, debug = False):
         """Constructs a new cat.
         
         Args:Args:
@@ -16,16 +16,16 @@ class Cat(Actor):
         """
         super().__init__(debug)
         self._body = body
-        #self._animation = animation
-        self._image = image
+        self._animation = animation
+        #self._image = image
 
-    #def get_animation(self):
+    def get_animation(self):
         """Gets the cat's animation.
         
         Returns:
             An instance of Animation.
         """
-        #return self._animation
+        return self._animation
 
     def get_image(self):
         """Gets the ball's image.

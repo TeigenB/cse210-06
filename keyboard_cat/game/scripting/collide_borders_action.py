@@ -9,16 +9,14 @@ class CollideBordersAction(Action):
         self._audio_service = audio_service    
         
     def execute(self, cast, script, callback):
-        ball = cast.get_first_actor(artifact_GROUP)
-        body = ball.get_body()
+        artifact = cast.get_first_actor(artifact_GROUP)
+        body = artifact.get_body()
         position = body.get_position()
         x = position.get_x()
-        y = position.get_y()
-        bounce_sound = Sound(BOUNCE_SOUND)
         over_sound = Sound(OVER_SOUND)
 
     
-        if y >= (FIELD_RIGHT - artifact_WIDTH):
+        if x >= (FIELD_RIGHT):
             stats = cast.get_first_actor(STATS_GROUP)
             stats.lose_life()
             
@@ -26,3 +24,4 @@ class CollideBordersAction(Action):
                 callback.on_next(GAME_OVER)
                 self._audio_service.play_sound(over_sound) 
 
+        cast.remove_actor(artifact_GROUP, artifact)

@@ -1,5 +1,6 @@
 import csv
 from constants import *
+from game.scripting.user_input import UserInput
 from game.casting.animation import Animation
 from game.casting.artifact import Artifact
 from game.casting.image import Image
@@ -10,6 +11,9 @@ from game.casting.word_window import Word_Window
 from game.casting.cat import Cat
 from game.casting.stats import Stats
 from game.casting.text import Text 
+from game.scripting.get_text import GetText
+from game.scripting.check_match import CheckMatch
+from game.scripting.check_over_action import CheckOverAction
 from game.scripting.change_scene_action import ChangeSceneAction
 from game.scripting.collide_borders_action import CollideBordersAction
 from game.scripting.draw_dialog_action import DrawDialogAction
@@ -35,9 +39,10 @@ class SceneManager:
     
     AUDIO_SERVICE = RaylibAudioService()
     KEYBOARD_SERVICE = RaylibKeyboardService()
-
+    CHECK_OVER_ACTION = CheckOverAction()
     VIDEO_SERVICE = RaylibVideoService(GAME_NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
     COLLIDE_BORDERS_ACTION = CollideBordersAction( AUDIO_SERVICE)
+    CHECK_MATCH_ACTION = CheckMatch()
     DRAW_ARTIFACT_ACTION = DrawArtifactAction(VIDEO_SERVICE)
     DRAW_DIALOG_ACTION = DrawDialogAction(VIDEO_SERVICE)
     DRAW_HUD_ACTION = DrawHudAction(VIDEO_SERVICE)
@@ -50,6 +55,7 @@ class SceneManager:
     RELEASE_DEVICES_ACTION = ReleaseDevicesAction(AUDIO_SERVICE, VIDEO_SERVICE)
     START_DRAWING_ACTION = StartDrawingAction(VIDEO_SERVICE)
     UNLOAD_ASSETS_ACTION = UnloadAssetsAction(AUDIO_SERVICE, VIDEO_SERVICE)
+    USER_INPUT = UserInput(KEYBOARD_SERVICE)
 
     def __init__(self):
         pass
@@ -83,19 +89,18 @@ class SceneManager:
         self._add_release_script(script)
 
     def _prepare_in_play(self, cast, script):
-        self._activate_ball(cast)
         cast.clear_actors(DIALOG_GROUP)
-
         script.clear_actions(INPUT)
         
         #instead of having the input of ther user moving the racket, this is where I want the user input of typing to be
-        #script.add_action(INPUT, self.CONTROL_RACKET_ACTION)
-        #self._add_update_script(script)
-        #self._add_output_script(script)
+        script.add_action(INPUT, self.USER_INPUT)
+        script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, 2))
+        self._add_update_script(script, cast)
+        self._add_output_script(script)
 
     def _prepare_game_over(self, cast, script):
-        self._add_ball(cast)
-        self._add_racket(cast)
+        self._add_artifact(cast)
+        self._add_cat(cast)
         self._add_dialog(cast, WAS_GOOD_GAME)
 
         script.clear_actions(INPUT)
@@ -110,13 +115,17 @@ class SceneManager:
 
     def _add_artifact(self, cast):
         x = FIELD_LEFT
-        y = SCREEN_HEIGHT/2 
+        y = RANDOMIZE
+        scale = 0.15
         position = Point(x, y)
         size = Point(artifact_WIDTH, artifact_HEIGHT)
         velocity = Point(0, 0)
-        image = Image(artifact_IMAGE)
+        image = Image(artifact_IMAGE, scale)
+        text = GetText()
+        #i need to figure out how to get the word to attach to the pic
+        label = Label(text, position)
         body = Body(position, size, velocity)
-        artifact = Artifact(body, image, True)
+        artifact = Artifact(body, image, text, True)
         cast.add_actor(artifact_GROUP, artifact)
 
     """def _add_bricks(self, cast):
@@ -148,7 +157,7 @@ class SceneManager:
 
     def _add_lives(self, cast):
         cast.clear_actors(LIVES_GROUP)
-        text = Text(LIVES_FORMAT, FONT_FILE, FONT_SMALL, ALIGN_RIGHT)
+        text = Text(LIVES_FORMAT, FONT_FILE, FONT_LARGE, ALIGN_RIGHT)
         position = Point(SCREEN_WIDTH - HUD_MARGIN, HUD_MARGIN)
         label = Label(text, position)
         cast.add_actor(LIVES_GROUP, label)
@@ -163,10 +172,16 @@ class SceneManager:
 
     def _add_score(self, cast):
         cast.clear_actors(SCORE_GROUP)
-        text = Text(SCORE_FORMAT, FONT_FILE, FONT_SMALL, ALIGN_LEFT)
+        text = Text(SCORE_FORMAT, FONT_FILE, FONT_LARGE, ALIGN_LEFT)
         position = Point(HUD_MARGIN, HUD_MARGIN)
         label = Label(text, position)
         cast.add_actor(SCORE_GROUP, label)
+    
+    def _add_user_input(self, cast):
+        text = Text(user_input_format, FONT_FILE, FONT_LARGE, ALIGN_LEFT)
+        position = Point(CENTER_X ,FIELD_BOTTOM - HUD_MARGIN)
+        label = Label(text, position)
+        cast.add_actor(input_GROUP, label)
 
     def _add_stats(self, cast):
         cast.clear_actors(STATS_GROUP)
@@ -175,25 +190,27 @@ class SceneManager:
 
     def _add_cat(self, cast):
         cast.clear_actors(cat_GROUP)
-        x = CENTER_X - cat_WIDTH / 2
-        y = SCREEN_HEIGHT - cat_HEIGHT
+        x = CENTER_X /2  -  cat_WIDTH
+        y = SCREEN_HEIGHT * 0.7
+        scale = 0.2
         position = Point(x, y)
         size = Point(cat_WIDTH, cat_HEIGHT)
         velocity = Point(0, 0)
         body = Body(position, size, velocity)
-        image = Image(cat_IMAGES)
-        cat = Cat(body, image)
+        animation = Animation(cat_IMAGES)
+        cat = Cat(body, animation)
         cast.add_actor(cat_GROUP, cat)
 
     def _add_word_window(self, cast):
         cast.clear_actors(word_window_GROUP)
-        x = CENTER_X - word_window_WIDTH / 2
-        y = SCREEN_HEIGHT - word_window_HEIGHT - cat_HEIGHT - 50
+        x = CENTER_X/2 - cat_WIDTH
+        y = SCREEN_HEIGHT * 0.8
+        scale = 0.2
         position = Point(x, y)
         size = Point(word_window_WIDTH, word_window_HEIGHT)
         velocity = Point(0, 0)
         body = Body(position, size, velocity)
-        image = Image(word_window_IMAGES)
+        image = Image(word_window_IMAGES, scale)
         word_window = Word_Window(body, image)
         cast.add_actor(word_window_GROUP, word_window)
 
@@ -213,8 +230,8 @@ class SceneManager:
         script.add_action(OUTPUT, self.START_DRAWING_ACTION)
         script.add_action(OUTPUT, self.DRAW_HUD_ACTION)
         script.add_action(OUTPUT, self.DRAW_ARTIFACT_ACTION)
-        script.add_action(OUTPUT, self.DRAW_CAT_ACTION)
         script.add_action(OUTPUT, self.DRAW_WORD_WINDOW_ACTION)
+        script.add_action(OUTPUT, self.DRAW_CAT_ACTION)
         script.add_action(OUTPUT, self.DRAW_DIALOG_ACTION)
         script.add_action(OUTPUT, self.END_DRAWING_ACTION)
 
@@ -226,8 +243,11 @@ class SceneManager:
         script.clear_actions(UNLOAD)
         script.add_action(UNLOAD, self.UNLOAD_ASSETS_ACTION)
         
-    def _add_update_script(self, script):
+    def _add_update_script(self, script, cast):
         script.clear_actions(UPDATE)
+        self._add_artifact(cast)
+        script.add_action(OUTPUT, self.DRAW_ARTIFACT_ACTION)
         script.add_action(UPDATE, self.MOVE_ARTIFACT_ACTION)
+        script.add_action(UPDATE, self.CHECK_MATCH_ACTION)
         script.add_action(UPDATE, self.COLLIDE_BORDERS_ACTION)
         script.add_action(UPDATE, self.CHECK_OVER_ACTION)

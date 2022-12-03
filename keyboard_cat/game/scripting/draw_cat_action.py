@@ -11,7 +11,8 @@ class DrawCatAction(Action):
         cat = cast.get_first_actor(cat_GROUP)
         body = cat.get_body()
             
-        #animation = cat.get_animation()
-        image = cat.get_image()
+        animation = cat.get_animation()
+        image = animation.next_image()
         position = body.get_position()
         self._video_service.draw_image(image, position)
+

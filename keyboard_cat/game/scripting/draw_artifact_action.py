@@ -9,8 +9,7 @@ class DrawArtifactAction(Action):
         
     def execute(self, cast, script, callback):
         artifact = cast.get_first_actor(artifact_GROUP)
-        body = artifact.get_body()
-            
+        body = artifact.get_body()   
         image = artifact.get_image()
         position = body.get_position()
         self._video_service.draw_image(image, position)
