@@ -36,7 +36,8 @@ class Director(ActionCallback):
             self._execute_actions(INPUT)
             self._execute_actions(UPDATE)
             self._execute_actions(OUTPUT)
-   
+        self._execute_actions(UNLOAD)
+        self._execute_actions(RELEASE)  
         
     def _execute_actions(self, group):
         """Calls execute for each action in the given group.

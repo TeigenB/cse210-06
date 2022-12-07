@@ -56,3 +56,5 @@ class Artifact(Actor):
         #returns an instance of text
 
         return self._text
+
+

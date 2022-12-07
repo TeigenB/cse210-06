@@ -32,11 +32,13 @@ from game.scripting.unload_assets_action import UnloadAssetsAction
 from game.services.raylib.raylib_audio_service import RaylibAudioService
 from game.services.raylib.raylib_keyboard_service import RaylibKeyboardService
 from game.services.raylib.raylib_video_service import RaylibVideoService
+from game.scripting.add_artifact import AddArtifact
 
 
 class SceneManager:
     """The person in charge of setting up the cast and script for each scene."""
     
+    ADD_ARTIFACT_ACTION = AddArtifact()
     AUDIO_SERVICE = RaylibAudioService()
     KEYBOARD_SERVICE = RaylibKeyboardService()
     CHECK_OVER_ACTION = CheckOverAction()
@@ -84,6 +86,7 @@ class SceneManager:
         self._add_initialize_script(script)
         self._add_load_script(script)
         script.clear_actions(INPUT)
+        script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, IN_PLAY))
         self._add_output_script(script)
         self._add_unload_script(script)
         self._add_release_script(script)
@@ -94,67 +97,23 @@ class SceneManager:
         
         #instead of having the input of ther user moving the racket, this is where I want the user input of typing to be
         script.add_action(INPUT, self.USER_INPUT)
-        script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, 2))
+        script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, IN_PLAY))
         self._add_update_script(script, cast)
         self._add_output_script(script)
 
     def _prepare_game_over(self, cast, script):
-        self._add_artifact(cast)
+       # self._add_artifact(cast)
         self._add_cat(cast)
         self._add_dialog(cast, WAS_GOOD_GAME)
 
         script.clear_actions(INPUT)
-        script.add_action(INPUT)
+        script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, NEW_GAME))
         script.clear_actions(UPDATE)
         self._add_output_script(script)
 
     # ----------------------------------------------------------------------------------------------
     # casting methods
     # ----------------------------------------------------------------------------------------------
-    
-
-    def _add_artifact(self, cast):
-        x = FIELD_LEFT
-        y = RANDOMIZE
-        scale = 0.15
-        position = Point(x, y)
-        size = Point(artifact_WIDTH, artifact_HEIGHT)
-        velocity = Point(0, 0)
-        image = Image(artifact_IMAGE, scale)
-        text = GetText()
-        #i need to figure out how to get the word to attach to the pic
-        label = Label(text, position)
-        body = Body(position, size, velocity)
-        artifact = Artifact(body, image, text, True)
-        cast.add_actor(artifact_GROUP, artifact)
-
-    """def _add_bricks(self, cast):
-
-        
-        stats = cast.get_first_actor(STATS_GROUP)
-        filename = "CSE210-06/keyboard_cat/assets/data.txt"
-
-        with open(filename, 'r') as file:
-            reader = Text.reader(file, skipinitialspace=False)
-
-            for row in enumerate(reader):
-                x = FIELD_LEFT + c * BRICK_WIDTH
-                y = FIELD_TOP + r * BRICK_HEIGHT
-                
-                if frames == 1:
-                    points *= 2
-                
-                position = Point(x, y)
-                size = Point(BRICK_WIDTH, BRICK_HEIGHT)
-                velocity = Point(0, 0)
-                images = BRICK_IMAGES[color][0:frames]
-
-                body = Body(position, size, velocity)
-                animation = Animation(images, BRICK_RATE, BRICK_DELAY)
-
-                brick = Brick(body, animation, points)
-                cast.add_actor(BRICK_GROUP, brick)"""
-
     def _add_lives(self, cast):
         cast.clear_actors(LIVES_GROUP)
         text = Text(LIVES_FORMAT, FONT_FILE, FONT_LARGE, ALIGN_RIGHT)
@@ -245,7 +204,7 @@ class SceneManager:
         
     def _add_update_script(self, script, cast):
         script.clear_actions(UPDATE)
-        self._add_artifact(cast)
+        script.add_action(OUTPUT, self.ADD_ARTIFACT_ACTION)
         script.add_action(OUTPUT, self.DRAW_ARTIFACT_ACTION)
         script.add_action(UPDATE, self.MOVE_ARTIFACT_ACTION)
         script.add_action(UPDATE, self.CHECK_MATCH_ACTION)
