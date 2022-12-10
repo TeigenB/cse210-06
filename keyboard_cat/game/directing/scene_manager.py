@@ -11,7 +11,6 @@ from game.casting.word_window import Word_Window
 from game.casting.cat import Cat
 from game.casting.stats import Stats
 from game.casting.text import Text 
-from game.scripting.get_text import GetText
 from game.scripting.check_match import CheckMatch
 from game.scripting.check_over_action import CheckOverAction
 from game.scripting.change_scene_action import ChangeSceneAction
@@ -32,13 +31,11 @@ from game.scripting.unload_assets_action import UnloadAssetsAction
 from game.services.raylib.raylib_audio_service import RaylibAudioService
 from game.services.raylib.raylib_keyboard_service import RaylibKeyboardService
 from game.services.raylib.raylib_video_service import RaylibVideoService
-from game.scripting.add_artifact import AddArtifact
 
 
 class SceneManager:
     """The person in charge of setting up the cast and script for each scene."""
     
-    ADD_ARTIFACT_ACTION = AddArtifact()
     AUDIO_SERVICE = RaylibAudioService()
     KEYBOARD_SERVICE = RaylibKeyboardService()
     CHECK_OVER_ACTION = CheckOverAction()
@@ -59,14 +56,15 @@ class SceneManager:
     UNLOAD_ASSETS_ACTION = UnloadAssetsAction(AUDIO_SERVICE, VIDEO_SERVICE)
     USER_INPUT = UserInput(KEYBOARD_SERVICE)
 
-    def __init__(self):
+    def __init__(self, cast):
         pass
 
     def prepare_scene(self, scene, cast, script):
         if scene == NEW_GAME:
             self._prepare_new_game(cast, script)
         elif scene == IN_PLAY:
-            self._prepare_in_play(cast, script)
+            play = 1
+            self._prepare_in_play(cast, script, play)
         elif scene == GAME_OVER:    
             self._prepare_game_over(cast, script)
     
@@ -78,11 +76,9 @@ class SceneManager:
         self._add_stats(cast)
         self._add_lives(cast)
         self._add_score(cast)
-        self._add_artifact(cast)
         self._add_word_window(cast)
         self._add_cat(cast)
         self._add_dialog(cast, INSTRUCTIONS)
-
         self._add_initialize_script(script)
         self._add_load_script(script)
         script.clear_actions(INPUT)
@@ -91,21 +87,19 @@ class SceneManager:
         self._add_unload_script(script)
         self._add_release_script(script)
 
-    def _prepare_in_play(self, cast, script):
+    def _prepare_in_play(self, cast, script, play):
         cast.clear_actors(DIALOG_GROUP)
         script.clear_actions(INPUT)
-        
-        #instead of having the input of ther user moving the racket, this is where I want the user input of typing to be
+        self.add_artifacts(cast, script)
+        script.add_action(OUTPUT, DrawArtifactAction)
         script.add_action(INPUT, self.USER_INPUT)
         script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, IN_PLAY))
         self._add_update_script(script, cast)
-        self._add_output_script(script)
+        self._add_output_script(script, play)
 
     def _prepare_game_over(self, cast, script):
-       # self._add_artifact(cast)
         self._add_cat(cast)
         self._add_dialog(cast, WAS_GOOD_GAME)
-
         script.clear_actions(INPUT)
         script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, NEW_GAME))
         script.clear_actions(UPDATE)
@@ -149,7 +143,7 @@ class SceneManager:
 
     def _add_cat(self, cast):
         cast.clear_actors(cat_GROUP)
-        x = CENTER_X /2  -  cat_WIDTH
+        x = CENTER_X/2 - (cat_WIDTH * 2)
         y = SCREEN_HEIGHT * 0.7
         scale = 0.2
         position = Point(x, y)
@@ -162,8 +156,8 @@ class SceneManager:
 
     def _add_word_window(self, cast):
         cast.clear_actors(word_window_GROUP)
-        x = CENTER_X/2 - cat_WIDTH
-        y = SCREEN_HEIGHT * 0.8
+        x = CENTER_X/2 - (cat_WIDTH * 2)
+        y = SCREEN_HEIGHT * 0.6
         scale = 0.2
         position = Point(x, y)
         size = Point(word_window_WIDTH, word_window_HEIGHT)
@@ -173,9 +167,32 @@ class SceneManager:
         word_window = Word_Window(body, image)
         cast.add_actor(word_window_GROUP, word_window)
 
+    def add_artifacts(self,cast, script):
+        with open(TEXT_FILE, 'r') as file:
+            self.list = file.read().splitlines()
+        self._artifacts = len(cast.get_actors(artifact_GROUP))
+        self._score = cast.get_first_actor(STATS_GROUP)
+        self.score = Stats.get_score(self._score)
+        while self._artifacts <= self.score:
+            x = FIELD_LEFT
+            y = RANDOMIZE
+            scale = 0.1
+            position = Point(x, y)
+            size = Point(artifact_WIDTH, artifact_HEIGHT)
+            velocity = Point(2, 0)
+            image = Image(artifact_IMAGE, scale)
+            text = random.choice(self.list)
+            body = Body(position, size, velocity)
+            artifact = Artifact(body, image, text, True)
+            cast.add_actor(artifact_GROUP, artifact)
+            self._artifacts = len(cast.get_actors(artifact_GROUP))
+        
+
+
     # ----------------------------------------------------------------------------------------------
     # scripting methods
     # ----------------------------------------------------------------------------------------------
+    
     def _add_initialize_script(self, script):
         script.clear_actions(INITIALIZE)
         script.add_action(INITIALIZE, self.INITIALIZE_DEVICES_ACTION)
@@ -184,7 +201,7 @@ class SceneManager:
         script.clear_actions(LOAD)
         script.add_action(LOAD, self.LOAD_ASSETS_ACTION)
     
-    def _add_output_script(self, script):
+    def _add_output_script(self, script, play = 0):
         script.clear_actions(OUTPUT)
         script.add_action(OUTPUT, self.START_DRAWING_ACTION)
         script.add_action(OUTPUT, self.DRAW_HUD_ACTION)
@@ -204,9 +221,8 @@ class SceneManager:
         
     def _add_update_script(self, script, cast):
         script.clear_actions(UPDATE)
-        script.add_action(OUTPUT, self.ADD_ARTIFACT_ACTION)
-        script.add_action(OUTPUT, self.DRAW_ARTIFACT_ACTION)
         script.add_action(UPDATE, self.MOVE_ARTIFACT_ACTION)
         script.add_action(UPDATE, self.CHECK_MATCH_ACTION)
-        script.add_action(UPDATE, self.COLLIDE_BORDERS_ACTION)
+        self.score = script.add_action(UPDATE, self.COLLIDE_BORDERS_ACTION)
         script.add_action(UPDATE, self.CHECK_OVER_ACTION)
+

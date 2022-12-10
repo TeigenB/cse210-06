@@ -29,7 +29,7 @@ class Point:
             Point: A new Point that is the sum.
         """
         x = self._x + other.get_x()
-        y = self._y + other.get_y()
+        y = self._y + other.get_y()  
         return Point(x, y)
 
     def equals(self, other):

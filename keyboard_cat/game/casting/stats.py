@@ -11,14 +11,6 @@ class Stats(Actor):
         self._lives = DEFAULT_LIVES
         self._score = 0
 
-    def add_points(self, points):
-        """Adds the given points to the score.
-        
-        Args:
-            points: A number representing the points to add.
-        """
-        self._score += points
-
     def get_lives(self):
         """Gets the lives.
 

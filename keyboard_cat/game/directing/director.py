@@ -17,7 +17,7 @@ class Director(ActionCallback):
         self._video_service = video_service
         self._cast = Cast()
         self._script = Script()
-        self._scene_manager = SceneManager()
+        self._scene_manager = SceneManager(Cast)
         
     def on_next(self, scene):
         """Overriden ActionCallback method transitions to next scene.
@@ -50,3 +50,5 @@ class Director(ActionCallback):
         actions = self._script.get_actions(group)    
         for action in actions:
             action.execute(self._cast, self._script, self)          
+
+   

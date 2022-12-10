@@ -5,6 +5,8 @@ from constants import *
 from game.casting.color import Color
 from game.casting.text import Text
 from game.services.video_service import VideoService 
+from game.casting.artifact import Artifact
+
 
 
 class RaylibVideoService(VideoService):
@@ -37,14 +39,20 @@ class RaylibVideoService(VideoService):
         pyray.draw_texture_ex(texture, raylib_position, rotation, scale, tint)
         
 
-    def draw_text(self, text, position):
+    def draw_text(self, text, position, special = 0):
         filepath = text.get_fontfile()
         # fixed os dependent filepath
         filepath = str(pathlib.Path(filepath))
         value = text.get_value()
         size = text.get_size()
         spacing = 0
-        alignment = text.get_alignment()
+        if special == 1:
+            alignment = text.get_align()
+        elif special == 2:
+            alignment = text.align_down()
+        elif special == 0:
+            alignment = text.get_alignment()
+
         tint = self._to_raylib_color(Color(255, 255, 255))
 
         font = self._fonts[filepath]
@@ -60,6 +68,10 @@ class RaylibVideoService(VideoService):
             x = (position.get_x() - text_image.width) 
         elif alignment == ALIGN_LEFT:
             x = (position.get_x())
+        elif alignment == ALIGN_UP:
+            y = (position.get_y() - 25)
+        elif alignment == ALIGN_DOWN:
+            y = (position.get_y() + 90)
 
         raylib_position = pyray.Vector2(x, y)
         pyray.draw_text_ex(font, value, raylib_position, size, spacing, tint)

@@ -42,6 +42,8 @@ OVER_SOUND = "cse210-06/keyboard_cat/assets/sounds/over.wav"
 ALIGN_CENTER = 0
 ALIGN_LEFT = 1
 ALIGN_RIGHT = 2
+ALIGN_UP = 3
+ALIGN_DOWN = 4
 
 # COLORS
 BLACK = Color(0, 0, 0)
@@ -60,6 +62,9 @@ NEW_GAME = 0
 IN_PLAY = 1
 GAME_OVER = 2
 
+#text location
+TEXT_FILE = "cse210-06/keyboard_cat/assets/data.txt"
+
 # artifact
 artifact_GROUP = "artifacts"
 #picks a random number between 3 and 5
@@ -68,8 +73,7 @@ number = random.randrange(3, 6)
 artifact_IMAGE = (f"cse210-06/keyboard_cat/assets/images/{number}.png")
 artifact_WIDTH = 1
 artifact_HEIGHT = 1
-artifact_VELOCITY = 3
-
+artifact_VELOCITY = 2
 
 # -------------------------------------------------------------------------------------------------- 
 # SCRIPTING CONSTANTS

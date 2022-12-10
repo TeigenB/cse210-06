@@ -9,7 +9,12 @@ class CollideBordersAction(Action):
         self._audio_service = audio_service    
         
     def execute(self, cast, script, callback):
+        artifacts_in_play = cast.get_actors(artifact_GROUP)
+        if len(artifacts_in_play) == 0:
+            return
         artifact = cast.get_first_actor(artifact_GROUP)
+        if artifact == None:
+            return
         body = artifact.get_body()
         position = body.get_position()
         x = position.get_x()

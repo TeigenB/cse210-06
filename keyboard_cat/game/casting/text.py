@@ -41,6 +41,7 @@ class Text:
         Returns:
             A string containing the text's value.
         """
+
         return self._value
 
     def set_value(self, value):

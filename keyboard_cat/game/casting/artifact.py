@@ -6,7 +6,7 @@ from game.casting.point import Point
 class Artifact(Actor):
     """A solid object that goes from the left side of the screen to the right side of the screen."""
     
-    def __init__(self, body, image, text, debug = False):
+    def __init__(self, body, image, text, debug = False, fontfile = FONT_FILE, size = FONT_LARGE, alignment = ALIGN_UP):
         """Constructs a new Artifact.
 
         Args:
@@ -18,6 +18,10 @@ class Artifact(Actor):
         self._body = body
         self._image = image
         self._text = text
+        self._value = text
+        self._fontfile = fontfile
+        self._size = size
+        self._alignment = alignment
 
     def bounce_y(self):
         """pushes the artifact in the y direction."""
@@ -56,5 +60,45 @@ class Artifact(Actor):
         #returns an instance of text
 
         return self._text
+    
+    def get_value(self):
+        """Gets the text's value.
+        
+        Returns:
+            A string containing the text's value.
+        """
 
+        return self._value
+
+    def set_value(self, value):
+        """Sets the text's value.
+        
+        Args:
+            A string containing the text's value.
+        """
+        return self._value
+
+    def get_align(self):
+            """Gets the alignment for the text.
+            
+            Returns:
+                A number representing the text alignment.
+            """
+            return self._alignment
+
+    def get_fontfile(self):
+        """Gets the font file for the text.
+        
+        Returns:
+            A string containing the font file.
+        """
+        return self._fontfile
+
+    def get_size(self):
+        """Gets the font size of the text.
+        
+        Returns:
+            A number representing the font size.
+        """
+        return self._size
 
