@@ -1,6 +1,5 @@
 import csv
 from constants import *
-from game.scripting.user_input import UserInput
 from game.casting.animation import Animation
 from game.casting.artifact import Artifact
 from game.casting.image import Image
@@ -31,17 +30,19 @@ from game.scripting.unload_assets_action import UnloadAssetsAction
 from game.services.raylib.raylib_audio_service import RaylibAudioService
 from game.services.raylib.raylib_keyboard_service import RaylibKeyboardService
 from game.services.raylib.raylib_video_service import RaylibVideoService
+from game.scripting.user_input import UserInput
 
 
 class SceneManager:
     """The person in charge of setting up the cast and script for each scene."""
     
     AUDIO_SERVICE = RaylibAudioService()
+    STATS = Stats()
     KEYBOARD_SERVICE = RaylibKeyboardService()
     CHECK_OVER_ACTION = CheckOverAction()
     VIDEO_SERVICE = RaylibVideoService(GAME_NAME, SCREEN_WIDTH, SCREEN_HEIGHT)
     COLLIDE_BORDERS_ACTION = CollideBordersAction( AUDIO_SERVICE)
-    CHECK_MATCH_ACTION = CheckMatch()
+    CHECK_MATCH_ACTION = CheckMatch(STATS)
     DRAW_ARTIFACT_ACTION = DrawArtifactAction(VIDEO_SERVICE)
     DRAW_DIALOG_ACTION = DrawDialogAction(VIDEO_SERVICE)
     DRAW_HUD_ACTION = DrawHudAction(VIDEO_SERVICE)
@@ -54,7 +55,7 @@ class SceneManager:
     RELEASE_DEVICES_ACTION = ReleaseDevicesAction(AUDIO_SERVICE, VIDEO_SERVICE)
     START_DRAWING_ACTION = StartDrawingAction(VIDEO_SERVICE)
     UNLOAD_ASSETS_ACTION = UnloadAssetsAction(AUDIO_SERVICE, VIDEO_SERVICE)
-    USER_INPUT = UserInput(KEYBOARD_SERVICE)
+    USER_INPUT_ACTION = UserInput(KEYBOARD_SERVICE)
 
     def __init__(self, cast):
         pass
@@ -92,15 +93,19 @@ class SceneManager:
         script.clear_actions(INPUT)
         self.add_artifacts(cast, script)
         script.add_action(OUTPUT, DrawArtifactAction)
-        script.add_action(INPUT, self.USER_INPUT)
         script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, IN_PLAY))
+        script.add_action(INPUT, UserInput(self.KEYBOARD_SERVICE))
         self._add_update_script(script, cast)
         self._add_output_script(script, play)
+        
+
 
     def _prepare_game_over(self, cast, script):
         self._add_cat(cast)
         self._add_dialog(cast, WAS_GOOD_GAME)
         script.clear_actions(INPUT)
+        cast.clear_actors(artifact_GROUP)
+        self.STATS.reset()
         script.add_action(INPUT, ChangeSceneAction(self.KEYBOARD_SERVICE, NEW_GAME))
         script.clear_actions(UPDATE)
         self._add_output_script(script)
@@ -138,8 +143,7 @@ class SceneManager:
 
     def _add_stats(self, cast):
         cast.clear_actors(STATS_GROUP)
-        stats = Stats()
-        cast.add_actor(STATS_GROUP, stats)
+        cast.add_actor(STATS_GROUP, self.STATS)
 
     def _add_cat(self, cast):
         cast.clear_actors(cat_GROUP)
@@ -171,11 +175,16 @@ class SceneManager:
         with open(TEXT_FILE, 'r') as file:
             self.list = file.read().splitlines()
         self._artifacts = len(cast.get_actors(artifact_GROUP))
-        self._score = cast.get_first_actor(STATS_GROUP)
-        self.score = Stats.get_score(self._score)
-        while self._artifacts <= self.score:
+        self.score = self.STATS.get_score()
+        while self._artifacts <= (self.score / 3):
             x = FIELD_LEFT
-            y = RANDOMIZE
+            y = random.choice(POSITIONS)
+
+            for artifact in cast.get_actors(artifact_GROUP):
+                pos = artifact.get_body().get_position() 
+                if x == pos.get_x() and y == pos.get_y():
+                    x -= 150
+
             scale = 0.1
             position = Point(x, y)
             size = Point(artifact_WIDTH, artifact_HEIGHT)

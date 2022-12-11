@@ -28,5 +28,5 @@ class CollideBordersAction(Action):
             if stats.get_lives() == 0:
                 callback.on_next(GAME_OVER)
                 self._audio_service.play_sound(over_sound) 
-
-        cast.remove_actor(artifact_GROUP, artifact)
+            else:
+                cast.remove_actor(artifact_GROUP, artifact)

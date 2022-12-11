@@ -6,28 +6,29 @@ from game.casting.artifact import Artifact
 from game.casting.body import Body
 from game.casting.image import Image
 from game.casting.text import Text
+from game.scripting.user_input import UserInput
 
 class CheckMatch(Action):
     #this class will check if the user input is a match
     #with any of the existing artifacts.
     
-    def __init__(self) -> None:
+    def __init__(self, stats) -> None:
         self._keyboard_service = RaylibKeyboardService()
         self._artifact = Artifact(Body, Image, Text)
+        self.user_input = UserInput(self._keyboard_service)
+        self._stats = stats
 
     def execute(self, cast, script, callback):
-        if self._keyboard_service.is_key_pressed(ENTER):
-             user_letters = cast.get_actors(input_GROUP)
-             user_word = ""
+         user_letters = self.user_input.keys(cast)
+         if user_letters:
+            print(user_letters)
 
-             for letter in user_letters:
-                user_word += letter
 
-             artifacts = cast.get_actors(artifact_GROUP)
-             game_words = []    
-             for artifact in artifacts:
-                game_words.append(self._artifact.get_text())
+            user_word = "".join(user_letters)
 
-             for word in game_words:
-                if user_word == word:
-                      self._stats.add_points(1)
+
+            artifacts = cast.get_actors(artifact_GROUP) 
+            for item in artifacts:
+               if user_word == item.get_text():
+                  self._stats.add_points(1)
+                  cast.remove_actor(artifact_GROUP, item)

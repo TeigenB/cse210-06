@@ -27,6 +27,14 @@ class Stats(Actor):
         """
         return self._score
 
+    def add_points(self, points):
+        """Adds the given points to the score.
+        
+        Args:
+            points: A number representing the points to add.
+        """
+        self._score += points
+
     def lose_life(self):
         """Removes one life."""
         if self._lives > 0:

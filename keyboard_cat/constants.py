@@ -26,7 +26,7 @@ UP = int(SCREEN_HEIGHT *0.25)
 MIDDLE = int(SCREEN_HEIGHT * 0.4)
 DOWN = int(SCREEN_HEIGHT * 0.55)
 POSITIONS = [UP, MIDDLE, DOWN]
-RANDOMIZE = random.choice(POSITIONS)
+
 
 # FONT
 FONT_FILE = "cse210-06/keyboard_cat/assets/fonts/font.ttf"

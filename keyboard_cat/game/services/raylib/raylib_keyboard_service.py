@@ -1,6 +1,6 @@
 import pyray
 from game.services.keyboard_service import KeyboardService
-
+from game.scripting.user_input import UserInput
 
 class RaylibKeyboardService(KeyboardService):
     """A Raylib implementation of KeyboardService."""
@@ -41,8 +41,10 @@ class RaylibKeyboardService(KeyboardService):
     
     def is_key_pressed(self, key):
         raylib_key = self._keys[key.lower()]
-        return pyray.is_key_pressed(raylib_key)
-    
+        #UserInput.keys(self, key)
+        x = pyray.is_key_pressed(raylib_key)
+        return  x
+
     def is_key_released(self, key):
         raylib_key = self._keys[key.lower()]
         return pyray.is_key_released(raylib_key)

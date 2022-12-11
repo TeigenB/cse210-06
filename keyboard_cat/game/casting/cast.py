@@ -78,3 +78,11 @@ class Cast:
         """
         if group in self._actors:
             self._actors[group].remove(actor)
+
+    def get_actor_locations(self, group):
+        
+        results = []
+        if group in self._actors.keys():
+            results = self._actors[group].copy()
+        return results
+        
