@@ -15,7 +15,6 @@ on
 are
 with
 as
-I
 his
 they
 be
@@ -239,7 +238,7 @@ draw
 left
 late
 run
-don't
+dont
 while
 press
 close
@@ -789,7 +788,7 @@ provide
 agree
 thus
 capital
-won't
+wont
 chair
 danger
 fruit

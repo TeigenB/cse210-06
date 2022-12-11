@@ -68,9 +68,9 @@ TEXT_FILE = "cse210-06/keyboard_cat/assets/data.txt"
 # artifact
 artifact_GROUP = "artifacts"
 #picks a random number between 3 and 5
-number = random.randrange(3, 6)
+
 #calls that image to randomize the artifact appearance
-artifact_IMAGE = (f"cse210-06/keyboard_cat/assets/images/{number}.png")
+
 artifact_WIDTH = 1
 artifact_HEIGHT = 1
 artifact_VELOCITY = 2

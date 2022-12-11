@@ -189,6 +189,8 @@ class SceneManager:
             position = Point(x, y)
             size = Point(artifact_WIDTH, artifact_HEIGHT)
             velocity = Point(2, 0)
+            number = random.randrange(3, 6)
+            artifact_IMAGE = (f"cse210-06/keyboard_cat/assets/images/{number}.png")
             image = Image(artifact_IMAGE, scale)
             text = random.choice(self.list)
             body = Body(position, size, velocity)
